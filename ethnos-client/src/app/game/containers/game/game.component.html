@@ -1,0 +1,8 @@
+<button (click)="setupRound()">ROUND START</button>
+
+<app-deck [size]="deckSize$ | async" (draw)="drawCard()"></app-deck>
+<app-board [spaces]="spaces$ | async"></app-board>
+<app-draw [cards]="drawPile$ | async" (draw)="drawDraw($event)"></app-draw>
+<ng-template ngFor let-player [ngForOf]="players$ | async" [ngForTrackBy]="trackByPlayer">
+<app-player-state [player]="player" [isCurrentPlayer]="player.id === (currentPlayer$ | async)"></app-player-state>
+</ng-template>

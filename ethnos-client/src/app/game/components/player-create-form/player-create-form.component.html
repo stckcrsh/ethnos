@@ -1,0 +1,7 @@
+<form [formGroup]="setupForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="name">Name</label>
+    <input placeholder="name" type="text" formControlName="name" />
+  </div>
+  <button type="submit" >Submit</button>
+</form>

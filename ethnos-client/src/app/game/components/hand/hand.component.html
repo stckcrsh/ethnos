@@ -1,0 +1,5 @@
+<button [disabled]="leader.value === null" (click)="submit()">PLAY SET</button>
+<ng-template ngFor let-card [ngForOf]="viewSelected$ | async">
+  <app-card [class.active]="card.__selected" [class.selectable]="card.__selectable" [card]="card" (click)="cardClick(card)"></app-card>
+  <input *ngIf="card.__selected" type="radio" name="leader" [formControl]="leader" [value]="card" />
+</ng-template>

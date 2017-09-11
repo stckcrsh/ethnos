@@ -1,0 +1,30 @@
+{
+  "name": "ethnos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha index.ts --require ts-node/register ./**/*.spec.ts",
+    "start": "ts-node index.ts",
+    "jasmine": "jasmine"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@angular/core": "^4.3.1",
+    "@ngrx/effects": "^4.0.1",
+    "@ngrx/store": "^4.0.0",
+    "chai": "^4.1.0",
+    "inquirer": "^3.2.1",
+    "jasmine": "^2.7.0",
+    "mocha": "^3.4.2",
+    "ramda": "^0.24.1",
+    "rxjs": "^5.4.2",
+    "shortid": "^2.2.8",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.4.2"
+  },
+  "devDependencies": {
+    "ts-mocha": "^1.0.3"
+  }
+}

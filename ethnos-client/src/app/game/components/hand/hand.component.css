@@ -1,0 +1,8 @@
+/deep/ .selectable {
+  color: lightskyblue
+}
+
+/deep/ .active {
+  color: green;
+}
+
