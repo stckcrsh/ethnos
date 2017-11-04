@@ -1,4 +1,4 @@
-import { CardID } from "./card.model";
+import { CardID } from './card.model';
 
 export interface CardSet {
   leader: CardID;

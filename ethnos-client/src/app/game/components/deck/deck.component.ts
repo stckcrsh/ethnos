@@ -1,18 +1,27 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
-  selector: "app-deck",
-  templateUrl: "./deck.component.html",
-  styleUrls: ["./deck.component.css"]
+  selector: 'app-deck',
+  templateUrl: './deck.component.html',
+  styleUrls: ['./deck.component.scss']
 })
 export class DeckComponent implements OnInit {
-  @Input() public size = 0;
+  public card = {
+    name: 'DRAW - 0',
+    type: '7'
+  };
+
+  @Input() public set size(value: number) {
+    this.card = { ...this.card, name: 'DRAW - ' + value };
+  };
 
   @Output() public draw: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() {}
 
-  ngOnInit() {}
+
+  constructor() { }
+
+  ngOnInit() { }
 
   public drawCard() {
     this.draw.next();

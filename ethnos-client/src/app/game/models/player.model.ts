@@ -1,5 +1,5 @@
-import { CardID } from "./card.model";
-import { CardSet } from "./cardset.model";
+import { CardID } from './card.model';
+import { CardSet } from './cardset.model';
 
 export type PlayerID = string;
 

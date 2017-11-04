@@ -1,138 +1,117 @@
-import { Observable } from "rxjs/Observable";
-import { ReplaySubject } from "rxjs/ReplaySubject";
-import { Card } from "../../models/card.model";
-import { CardSet } from "../../models/cardset.model";
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output
-} from "@angular/core";
-import {
-  default as normalize,
-  Normalized
-} from "../../../../helpers/normalize";
-import * as R from "ramda";
-import "rxjs/add/operator/scan";
-import "rxjs/add/operator/shareReplay";
-import "rxjs/add/operator/startWith";
-import "rxjs/add/operator/filter";
-import "rxjs/add/operator/switchMap";
-import { FormControl } from "@angular/forms";
-import { Subject } from "rxjs/Subject";
+import { ConnectableObservable } from 'rxjs/Rx';
+import { Component, ElementRef, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import * as R from 'ramda';
+import { Observable } from 'rxjs/Observable';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/operator/repeat';
+import 'rxjs/add/operator/publish';
+import 'rxjs/add/operator/merge';
+
+import normalize, { Normalized } from "../../../../helpers/normalize";
+import { Abilities } from '../../models/abilities.model';
+import { Card } from '../../models/card.model';
+import { CardSet } from '../../models/cardset.model';
 
 interface CardPlus extends Card {
-  __selected: boolean;
-  __selectable: boolean;
+	__selected: boolean;
+	// __selectable: boolean;
 }
 
 const selectable = card =>
-  R.either(
-    R.compose(R.all(R.equals(card.type)), R.pluck("type")),
-    R.compose(R.all(R.equals(card.name)), R.pluck("name"))
-  );
+	R.either(
+		R.compose(R.all(R.equals(card.type)), R.pluck('type')),
+		R.compose(R.all(R.equals(card.name)), R.pluck('name'))
+	);
+
+const cardNormalizer = normalize < Card > ('id');
+const listEntites = (ids, entities) => R.map((id) => R.prop(id, entities), ids)
+
+const removeCardById = (id) => (cards) => R.remove(R.indexOf(id, cards), 1, cards)
 
 @Component({
-  selector: "app-hand",
-  templateUrl: "./hand.component.html",
-  styleUrls: ["./hand.component.css"]
+	selector: 'app-hand',
+	// templateUrl: './hand.component.html',
+	template: `
+  <button (click)="play()" >PLAY SET</button>
+  <ng-template ngFor let-card [ngForOf]="activeCards$ | async" [ngForTrackBy]="trackByFn">
+    <span class="hand__item">
+      <app-card [card]="card" (click)="cardClick(card)" [active]="card.__selected"></app-card>
+      <input *ngIf="card.__selected" class="hand__leader" type="radio" name="leader" [formControl]="leader" [value]="card.id" />
+    </span>
+  </ng-template>
+  <button (click)="clear()">CLEAR</button>
+  `,
+	styleUrls: ['./hand.component.scss'],
+	host: {
+		'[class]': '"hand"'
+  },
+  encapsulation: ViewEncapsulation.None
 })
-export class HandComponent implements OnInit, OnDestroy {
-  public leader: FormControl = new FormControl();
+export class HandComponent {
+	@ViewChild('playButton') public playButton;
+	@ViewChild('clearButton') public clearButton;
 
-  @Input()
-  public set cards(value: Card[]) {
-    this.cards$.next(normalize<Card>("id")(value));
-  }
+	public leader: FormControl = new FormControl();
 
-  private selected$: Subject<CardPlus> = new Subject<CardPlus>();
-  public cards$: ReplaySubject<Normalized<Card>> = new ReplaySubject<
-    Normalized<Card>
-  >();
+	public cardsClicked$: Subject < Card > = new Subject < Card > ();
+	public selected$: Observable < string[] > ;
+	public cards$: ReplaySubject < Normalized < Card >> = new ReplaySubject < Normalized < Card > > ();
+	public activeCards$: Observable < CardPlus[] > ;
 
-  public selectedCards$: Observable<
-    Normalized<CardPlus>
-  > = this.cards$.switchMap(() => {
-    return this.getSelectedCards();
-  });
-  public leader$: Observable<CardPlus>;
-  public submit$: Subject<boolean> = new Subject<boolean>();
+	public cleared$: Subject < void > = new Subject < void > ();
+	public played$: Subject < void > = new Subject < void > ();
 
-  @Output() public playSet: any;
+	@Input()
+	public set cards(cards: Card[]) {
+		this.cards$.next(cardNormalizer(cards));
+		this.cleared$.next();
+	}
 
-  public viewSelected$: Observable<CardPlus[]>;
-  constructor() {
-    this.leader$ = this.leader.valueChanges.startWith(null);
+	@Output() public playSet$: Observable < CardSet > ;
 
-    this.viewSelected$ = Observable.combineLatest(
-      this.selectedCards$,
-      this.cards$,
-      (selected: any, cards) => {
-        return [
-          ...cards.ids.map(id => ({
-            ...cards.entities[id],
-            __selected: selected.entities[id] ? true : false,
-            __selectable: selectable(cards.entities[id])(
-              selected.ids.map(id => selected.entities[id])
-            )
-          }))
-        ];
-      }
-    );
+	constructor() {
 
-    this.playSet = this.submit$
-      .withLatestFrom(this.getCardSet())
-      .map(([_, set]) => set);
-  }
+		this.selected$ = this.cardsClicked$
+			.scan < Card, string[] > ((acc, card) => R.contains(card.id, acc) ? removeCardById(card.id)(acc) : [...acc, card.id], [])
+			.startWith([])
+			.takeUntil(this.cleared$)
+			.repeat();
 
-  public submit() {
-    this.submit$.next(true);
-  }
+		this.activeCards$ = combineLatest(this.selected$.startWith([]), this.cards$)
+			.map < [string[], Normalized < Card > ], CardPlus[] > (([selected, cards]: [string[], Normalized < Card > ]) => {
+				const entities = R.reduce((acc, item) => R.assocPath([item, '__selected'], true, acc), cards.entities, selected);
+				return listEntites(cards.ids, entities);
+			});
 
-  public getSelectedCards(): Observable<Normalized<CardPlus>> {
-    return this.selected$
-      .filter(card => card.__selectable)
-      .scan<CardPlus>((acc, card) => {
-        let newAcc;
-        if (card.__selected) {
-          return acc.filter(_card => _card.id !== card.id);
-        } else {
-          return acc.concat([card]);
-        }
-      }, [])
-      .startWith([])
-      .map(normalize<CardPlus>("id"))
-      .do(() => this.leader.reset());
-  }
+		this.playSet$ = this.played$
+			.withLatestFrom(combineLatest(this.selected$, this.leader.valueChanges))
+			// filter out if there are no cards selected or if the leader is not a selected card
+			.filter(([_, [cards, leader]]) => !R.isEmpty(cards) && R.contains(leader, cards))
+			.map(([_, [cards, leader]]) => ({ leader: leader, cards: cards }));
 
-  ngOnInit() {}
+		this.playSet$.subscribe(res => console.log(res))
 
-  public getCardSet() {
-    return this.leader$
-      .filter(leader => !!leader)
-      .withLatestFrom(this.selectedCards$)
-      .map(([leader, selected]) => ({
-        leader: leader.id,
-        cards: selected.ids
-      }));
-  }
+	}
 
-  public cardClick(card) {
-    this.selected$.next(card);
-  }
+	public cardClick(card: Card) {
+		this.cardsClicked$.next(card);
+	}
 
-  public ngOnDestroy() {
-    console.log("Destroyed");
-  }
+	public clear() {
+		this.cleared$.next();
+	}
 
-  public isSelectable(card: CardPlus) {
-    return this.selectedCards$.map(
-      R.either(
-        R.compose(R.all(R.equals(card.type)), R.pluck("type")),
-        R.compose(R.all(R.equals(card.type)), R.pluck("name"))
-      )
-    );
-  }
+	public play() {
+		this.played$.next();
+	}
+
+	public trackByFn(card: CardPlus) {
+		return card.id;
+	}
+
 }

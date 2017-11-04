@@ -1,12 +1,12 @@
-import { createSelector } from "@ngrx/store/src/selector";
-import { Player, PlayerID } from "../models/player.model";
-import { CardSet } from "../models/cardset.model";
-import { CardID } from "../models/card.model";
-import * as player from "../actions/player.actions";
-import * as game from "../actions/game.actions";
-import * as deck from "../actions/deck.actions";
-import * as draw from "../actions/draw-pile.actions";
-import normalize from "../../../helpers/normalize";
+import { createSelector } from '@ngrx/store/src/selector';
+import { Player, PlayerID } from '../models/player.model';
+import { CardSet } from '../models/cardset.model';
+import { CardID } from '../models/card.model';
+import * as player from '../actions/player.actions';
+import * as game from '../actions/game.actions';
+import * as deck from '../actions/deck.actions';
+import * as draw from '../actions/draw-pile.actions';
+import normalize from '../../../helpers/normalize';
 
 export interface State {
   entities: { [id: string]: Player };
@@ -18,14 +18,21 @@ export const initialState: State = {
   ids: []
 };
 
-export const playerNormalizer = normalize<Player>("id");
+export const playerNormalizer = normalize<Player>('id');
 
-export function reducer(state: State = initialState, { type, payload }): State {
-  switch (type) {
+export function reducer(
+  state: State = initialState,
+  action: game.DragonDrawnAction
+    | game.GameSetupAction
+    | game.RoundSetup
+    | deck.DeckDrawnAction
+    | draw.DrawDrawAction
+    | player.PlaySetAction): State {
+  switch (action.type) {
     case draw.DRAW:
     case deck.DRAW: {
-      const playerId = payload.playerId as PlayerID;
-      const cardid = payload.cardId as CardID;
+      const playerId = action.payload.playerId as PlayerID;
+      const cardid = action.payload.cardId as CardID;
       const player = state.entities[playerId];
       const newHand = [...player.hand, cardid];
 
@@ -41,9 +48,9 @@ export function reducer(state: State = initialState, { type, payload }): State {
       };
     }
     case player.PLAY_SET: {
-      const playerId = payload.playerId as PlayerID;
-      const set = payload.set as CardSet;
-      const discards = payload.discards as CardID[];
+      const playerId = action.payload.playerId as PlayerID;
+      const set = action.payload.set as CardSet;
+      const discards = action.payload.discards as CardID[];
 
       const player = state.entities[playerId];
       const newSets = player.sets.concat([set]);
@@ -64,12 +71,12 @@ export function reducer(state: State = initialState, { type, payload }): State {
       };
     }
     case game.SETUP: {
-      const players = payload.players as Player[];
+      const players = action.payload.players as Player[];
       return playerNormalizer(players);
     }
     case game.DRAGON_DRAW: {
-      const playerId = payload.playerId as PlayerID;
-      const dragon = payload.dragon as CardID;
+      const playerId = action.payload.playerId as PlayerID;
+      const dragon = action.payload.dragon as CardID;
 
       const newHand = state.entities[playerId].hand.filter(id => id !== dragon);
       return {
@@ -84,9 +91,10 @@ export function reducer(state: State = initialState, { type, payload }): State {
       };
     }
     case game.ROUND_SETUP: {
+      const hands = action.payload.hands;
       const players = state.ids
         .map(id => state.entities[id])
-        .map(player => ({ ...player, hand: [], sets: [] }));
+        .map(player => ({ ...player, hand: [hands[player.id]], sets: [] }));
 
       return playerNormalizer(players);
     }

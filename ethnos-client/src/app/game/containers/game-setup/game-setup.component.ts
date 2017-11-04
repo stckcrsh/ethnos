@@ -1,38 +1,38 @@
-import { Player } from "../../models/player.model";
-import { GameSetupAction } from "../../actions/game.actions";
-import { Store } from "@ngrx/store";
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import * as shortid from "shortid";
-import { Router } from "@angular/router";
+import { Player } from '../../models/player.model';
+import { GameSetupAction } from '../../actions/game.actions';
+import { Store } from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import * as shortid from 'shortid';
+import { Router } from '@angular/router';
 
 const players: Player[] = [
   {
-    name: "Rob",
+    name: 'Rob',
     hand: [],
     sets: [],
     id: shortid()
   },
   {
-    name: "Jon",
+    name: 'Jon',
     hand: [],
     sets: [],
     id: shortid()
   },
   {
-    name: "Bran",
+    name: 'Bran',
     hand: [],
     sets: [],
     id: shortid()
   },
   {
-    name: "Rickon",
+    name: 'Rickon',
     hand: [],
     sets: [],
     id: shortid()
   },
   {
-    name: "Arya",
+    name: 'Arya',
     hand: [],
     sets: [],
     id: shortid()
@@ -42,46 +42,46 @@ const initialCards = 6;
 const cards = [
   ...Array.apply(null, Array(initialCards)).map((_, idx) => ({
     id: shortid(),
-    name: "Elf",
+    name: 'Elf',
     type: idx % 6
   })),
   ...Array.apply(null, Array(initialCards)).map((_, idx) => ({
     id: shortid(),
-    name: "Minotaur",
+    name: 'Minotaur',
     type: idx % 6
   })),
   ...Array.apply(null, Array(initialCards)).map((_, idx) => ({
     id: shortid(),
-    name: "Skeleton",
+    name: 'Skeleton',
     type: idx % 6
   })),
   ...Array.apply(null, Array(initialCards)).map((_, idx) => ({
     id: shortid(),
-    name: "Halfling",
+    name: 'Halfling',
     type: idx % 6
   })),
   ...Array.apply(null, Array(initialCards)).map((_, idx) => ({
     id: shortid(),
-    name: "Wizard",
+    name: 'Wizard',
     type: idx % 6
   })),
   ...Array.apply(null, Array(initialCards)).map((_, idx) => ({
     id: shortid(),
-    name: "Goblin",
+    name: 'Goblin',
     type: idx % 6
   }))
 ];
 
 const dragons = [1, 2, 3].map(() => ({
   id: shortid(),
-  name: "Dragon",
-  type: "6"
+  name: 'Dragon',
+  type: '6'
 }));
 
 @Component({
-  selector: "app-game-setup",
-  templateUrl: "./game-setup.component.html",
-  styleUrls: ["./game-setup.component.css"]
+  selector: 'app-game-setup',
+  templateUrl: './game-setup.component.html',
+  styleUrls: ['./game-setup.component.css']
 })
 export class GameSetupComponent implements OnInit {
   public setupForm: FormGroup;
@@ -92,7 +92,7 @@ export class GameSetupComponent implements OnInit {
     private router: Router
   ) {
     this.setupForm = this.fb.group({
-      name: ""
+      name: ''
     });
   }
 
@@ -106,6 +106,6 @@ export class GameSetupComponent implements OnInit {
     // this.store$.dispatch(
       // new GameSetupAction(players, players[0].id, cards, dragons)
     // );
-    this.router.navigate(["game"]);
+    this.router.navigate(['game']);
   }
 }

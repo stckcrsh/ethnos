@@ -1,0 +1,35 @@
+@import '../../../../assets/variables';
+
+.space {
+  display: inline-block;
+  padding: 8px;
+
+  &__container{
+    background-color: white;
+  }
+
+  &--0 {
+    background-color: $type-0-color
+  }
+  &--1 {
+    background-color: $type-1-color
+  }
+  &--2 {
+    background-color: $type-2-color
+  }
+  &--3 {
+    background-color: $type-3-color
+  }
+  &--4 {
+    background-color: $type-4-color
+  }
+  &--5 {
+    background-color: $type-5-color
+  }
+}
+.score {
+  padding: 6px;
+}
+.score + .score {
+  border-left: 1px solid gray;
+}

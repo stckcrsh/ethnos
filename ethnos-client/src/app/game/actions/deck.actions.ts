@@ -1,8 +1,8 @@
-import { CardID } from "../models/card.model";
-import { PlayerID } from "../models/player.model";
+import { CardID } from '../models/card.model';
+import { PlayerID } from '../models/player.model';
 
 // Actions
-export const DRAW = "[Deck] Drawn";
+export const DRAW = '[Deck] Drawn';
 
 export class DeckDrawnAction {
   readonly type = DRAW;

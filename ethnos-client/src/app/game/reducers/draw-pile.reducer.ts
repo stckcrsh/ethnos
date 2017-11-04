@@ -1,7 +1,7 @@
-import * as game from "../actions/game.actions";
-import * as draw from "../actions/draw-pile.actions";
-import * as player from "../actions/player.actions";
-import { CardID } from "../models/card.model";
+import * as game from '../actions/game.actions';
+import * as draw from '../actions/draw-pile.actions';
+import * as player from '../actions/player.actions';
+import { CardID } from '../models/card.model';
 
 export type State = CardID[];
 

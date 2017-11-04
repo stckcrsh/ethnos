@@ -1,50 +1,50 @@
-import { Player } from "../models/player.model";
-import * as fromRoot from "./reducers";
+import { Player } from '../models/player.model';
+import * as fromRoot from './reducers';
 
 const jon_snow: Player = {
-  name: "Jon Snow",
-  id: "77u34nncj",
+  name: 'Jon Snow',
+  id: '77u34nncj',
   hand: [],
   sets: [{
     leader: 'sdcd',
-    cards:['sdcdcwe']
-  },{
+    cards: ['sdcdcwe']
+  }, {
     leader: 'sdcd',
-    cards:['sdcdcwe',]
+    cards: ['sdcdcwe', ]
   }]
 };
 
 const arya_stark: Player = {
-  name: "Arya Stark",
-  id: "oid834-8d",
+  name: 'Arya Stark',
+  id: 'oid834-8d',
   hand: [],
   sets: [{
     leader: 'sdcd',
-    cards:['sdcdcwe','dcsde', 'dc34fge5']
-  },{
+    cards: ['sdcdcwe', 'dcsde', 'dc34fge5']
+  }, {
     leader: 'sdcd',
-    cards:['sdcdcwe','dcsde']
+    cards: ['sdcdcwe', 'dcsde']
   }]
 };
 
 const reek: Player = {
-  name: "Reek",
-  id: "iic8s=-ec3",
+  name: 'Reek',
+  id: 'iic8s=-ec3',
   hand: [],
   sets: [{
     leader: 'sdcd',
-    cards:['sdcdcwe','dcsde', 'dc34fge5']
-  },{
+    cards: ['sdcdcwe', 'dcsde', 'dc34fge5']
+  }, {
     leader: 'sdcd',
-    cards:['sdcdcwe','dcsde', 'dc34fge5']
-  },{
+    cards: ['sdcdcwe', 'dcsde', 'dc34fge5']
+  }, {
     leader: 'sdcd',
-    cards:['sdcdcwe','dcsde', 'dc34fge5']
+    cards: ['sdcdcwe', 'dcsde', 'dc34fge5']
   }]
 };
 
-describe("Reducers Root", () => {
-  fdescribe("Scoring Selector", () => {
+describe('Reducers Root', () => {
+  fdescribe('Scoring Selector', () => {
     let state: fromRoot.GameState;
 
     beforeEach(() => {
@@ -57,24 +57,24 @@ describe("Reducers Root", () => {
         },
         deck: [],
         board: {
-          "0": {
-            type: "0",
+          '0': {
+            type: '0',
             pieces: { [jon_snow.id]: 2, [arya_stark.id]: 1, [reek.id]: 1 },
             scores: [6, 8, 8]
           },
-          "1": { type: "1", pieces: { [reek.id]: 1 }, scores: [0, 2, 4] },
-          "2": {
-            type: "2",
+          '1': { type: '1', pieces: { [reek.id]: 1 }, scores: [0, 2, 4] },
+          '2': {
+            type: '2',
             pieces: { [arya_stark.id]: 3, [jon_snow.id]: 2, [reek.id]: 1 },
             scores: [2, 4, 8]
           },
-          "3": {
-            type: "3",
+          '3': {
+            type: '3',
             pieces: { [jon_snow.id]: 2, [arya_stark.id]: 1 },
             scores: [0, 0, 4]
           },
-          "4": { type: "4", pieces: { [reek.id]: 1 }, scores: [4, 8, 10] },
-          "5": { type: "5", pieces: { [jon_snow.id]: 2 }, scores: [0, 0, 6] }
+          '4': { type: '4', pieces: { [reek.id]: 1 }, scores: [4, 8, 10] },
+          '5': { type: '5', pieces: { [jon_snow.id]: 2 }, scores: [0, 0, 6] }
         },
         players: {
           entities: {
@@ -93,7 +93,7 @@ describe("Reducers Root", () => {
       };
     });
 
-    it("should score accurately", () => {
+    it('should score accurately', () => {
       const scores = fromRoot.getScores({ game: state });
 
       const expected = {
@@ -106,15 +106,15 @@ describe("Reducers Root", () => {
       expect(scores).toEqual(expected);
     });
 
-    it("should calculate scores correctly", () => {
+    it('should calculate scores correctly', () => {
       const newState = {
         deck: [],
         game: {
-          currentPlayer: "SkeHOtjfO-",
+          currentPlayer: 'SkeHOtjfO-',
           scores: {
-            "S1S_KszO-": 4,
-            "SkeHOtjfO-": 6,
-            "SyWSOtoGOb": 0
+            'S1S_KszO-': 4,
+            'SkeHOtjfO-': 6,
+            'SyWSOtoGOb': 0
           },
           dragons: [],
           round: 1
@@ -122,108 +122,108 @@ describe("Reducers Root", () => {
         draw: [],
         players: {
           entities: {
-            "S1S_KszO-": {
-              name: "Rob",
-              hand: ["ByGruYofdZ"],
+            'S1S_KszO-': {
+              name: 'Rob',
+              hand: ['ByGruYofdZ'],
               sets: [
                 {
-                  leader: "SJKHutsMOb",
-                  cards: ["SJKHutsMOb", "rJDS_Yoz_b"]
+                  leader: 'SJKHutsMOb',
+                  cards: ['SJKHutsMOb', 'rJDS_Yoz_b']
                 },
                 {
-                  leader: "SkoHutsG_Z",
-                  cards: ["H1mS_tif_b", "SkoHutsG_Z", 'dcsd', 'scdcsdv', 'asdcdc', 'sdcsdc']
+                  leader: 'SkoHutsG_Z',
+                  cards: ['H1mS_tif_b', 'SkoHutsG_Z', 'dcsd', 'scdcsdv', 'asdcdc', 'sdcsdc']
                 }
               ],
-              id: "S1S_KszO-"
+              id: 'S1S_KszO-'
             },
-            "SkeHOtjfO-": {
-              name: "Jon",
+            'SkeHOtjfO-': {
+              name: 'Jon',
               hand: [],
               sets: [
                 {
-                  leader: "SyqrOFsfdZ",
-                  cards: ["SyqrOFsfdZ"]
+                  leader: 'SyqrOFsfdZ',
+                  cards: ['SyqrOFsfdZ']
                 },
                 {
-                  leader: "SkhSuFjMOW",
-                  cards: ["SkhSuFjMOW", "H18B_Ksz_Z", 'asdcdc']
+                  leader: 'SkhSuFjMOW',
+                  cards: ['SkhSuFjMOW', 'H18B_Ksz_Z', 'asdcdc']
                 }
               ],
-              id: "SkeHOtjfO-"
+              id: 'SkeHOtjfO-'
             },
             SyWSOtoGOb: {
-              name: "Bran",
+              name: 'Bran',
               hand: [],
               sets: [
                 {
-                  leader: "ryES_YozO-",
-                  cards: ["ryES_YozO-"]
+                  leader: 'ryES_YozO-',
+                  cards: ['ryES_YozO-']
                 },
                 {
-                  leader: "r1pB_Yszdb",
-                  cards: ["r1pB_Yszdb", "rJSSOYjzOW"]
+                  leader: 'r1pB_Yszdb',
+                  cards: ['r1pB_Yszdb', 'rJSSOYjzOW']
                 }
               ],
-              id: "SyWSOtoGOb"
+              id: 'SyWSOtoGOb'
             }
           },
-          ids: ["S1S_KszO-", "SkeHOtjfO-", "SyWSOtoGOb"]
+          ids: ['S1S_KszO-', 'SkeHOtjfO-', 'SyWSOtoGOb']
         },
         cards: {
-          entities:{
+          entities: {
           },
           ids: [
           ],
           dragons: []
         },
         board: {
-          "0": {
-            type: "0",
+          '0': {
+            type: '0',
             pieces: {
-              "S1S_KszO-": 1,
-              "SkeHOtjfO-": 2,
+              'S1S_KszO-': 1,
+              'SkeHOtjfO-': 2,
               SyWSOtoGOb: 1
             },
             scores: [2, 2, 10]
           },
-          "1": {
-            type: "1",
+          '1': {
+            type: '1',
             pieces: {
-              "SkeHOtjfO-": 1,
+              'SkeHOtjfO-': 1,
               SyWSOtoGOb: 2,
-              "S1S_KszO-": 2
+              'S1S_KszO-': 2
             },
             scores: [0, 4, 8]
           },
-          "2": {
-            type: "2",
+          '2': {
+            type: '2',
             pieces: {},
             scores: [0, 4, 10]
           },
-          "3": {
-            type: "3",
+          '3': {
+            type: '3',
             pieces: {},
             scores: [2, 6, 10]
           },
-          "4": {
-            type: "4",
+          '4': {
+            type: '4',
             pieces: {},
             scores: [0, 6, 6]
           },
-          "5": {
-            type: "5",
+          '5': {
+            type: '5',
             pieces: {},
             scores: [4, 8, 8]
           }
         }
       };
 
-      expect(fromRoot.getScores({game:newState})).toEqual({
+      expect(fromRoot.getScores({game: newState})).toEqual({
         // spaces     0   1 sets
-        "S1S_KszO-":  1 + 2 + 16,
-        "SkeHOtjfO-": 2 + 0 + 3,
-        "SyWSOtoGOb": 1 + 2 + 1
+        'S1S_KszO-':  1 + 2 + 16,
+        'SkeHOtjfO-': 2 + 0 + 3,
+        'SyWSOtoGOb': 1 + 2 + 1
       })
     });
   });

@@ -1,19 +1,24 @@
-import { DrawAddCardsAction } from "../../../../../draw-pile.reducer";
-import { Player, PlayerID } from "../models/player.model";
-import { Card, CardID } from "../models/card.model";
+import { DrawAddCardsAction } from '../actions/draw-pile.actions';
+import { Player, PlayerID } from '../models/player.model';
+import { Card, CardID } from '../models/card.model';
 
-export const SETUP = "[Game] Setup";
-export const NEXT_PLAYER = "[Game] Next player";
-export const ROUND_START = "[Game] Round start";
-export const ROUND_SETUP = "[Game] Round setup";
-export const DRAGON_DRAW = "[Game] Dragon draw";
-export const ROUND_END = "[Game] Round End";
-export const START = "[Game] Start Game";
-export const ADD_SCORES = "[Game] Adding scores";
-export const DRAW_CARD = "[Game] draw card";
+export const SETUP = '[Game] Setup';
+export const NEXT_PLAYER = '[Game] Next player';
+export const ROUND_START = '[Game] Round start';
+export const ROUND_SETUP = '[Game] Round setup';
+export const DRAGON_DRAW = '[Game] Dragon draw';
+export const ROUND_END = '[Game] Round End';
+export const START = '[Game] Start Game';
+export const ADD_SCORES = '[Game] Adding scores';
+export const DRAW_CARD = '[Game] draw card';
+export const GAME_END = '[Game] game over';
+export const NEXT_TURN = '[Game] Next Turn';
 
 export class GameStartAction {
   readonly type = START;
+}
+export class NextTurnAction {
+  readonly type = NEXT_TURN;
 }
 
 export class RoundStartAction {
@@ -22,7 +27,7 @@ export class RoundStartAction {
 
 export class DrawCardAction {
   readonly type = DRAW_CARD;
-  constructor(public payload: PlayerID) {}
+  constructor(public payload: PlayerID) { }
 }
 
 export class GameSetupAction {
@@ -61,12 +66,14 @@ export class RoundSetup {
     deck: CardID[];
     draw: CardID[];
     startPlayer: string;
+    hands: { [playerId: string]: CardID }
   };
-  constructor(deck: CardID[], draw: CardID[], startPlayer: string) {
+  constructor(deck: CardID[], draw: CardID[], startPlayer: string, hands: { [playerId: string]: CardID }) {
     this.payload = {
       deck,
       draw,
-      startPlayer
+      startPlayer,
+      hands
     };
   }
 }
@@ -87,7 +94,7 @@ export class AddScores {
     public payload: {
       [playerId: string]: number;
     }
-  ) {}
+  ) { }
 }
 
 export class DragonDrawnAction {
@@ -104,6 +111,10 @@ export class DragonDrawnAction {
   }
 }
 
+export class GameEndAction {
+  readonly type = GAME_END;
+}
+
 export type Actions =
   | GameSetupAction
   | NextPlayerAction
@@ -113,4 +124,6 @@ export type Actions =
   | DragonDrawnAction
   | GameStartAction
   | RoundStartAction
-  | DrawCardAction;
+  | DrawCardAction
+  | GameEndAction
+  | NextTurnAction;

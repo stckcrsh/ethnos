@@ -1,5 +1,5 @@
-import { environment } from "../../environments/environment";
-import { storeFreeze } from "ngrx-store-freeze";
+import { environment } from '../../environments/environment';
+import { storeFreeze } from 'ngrx-store-freeze';
 export type State = any;
 
 export function getInitialState(): State {

@@ -1,7 +1,7 @@
-import { createSelector } from "@ngrx/store";
-import normalize from "../../../helpers/normalize";
-import { SETUP } from "../actions/game.actions";
-import { Card, CardID } from "../models/card.model";
+import { createSelector } from '@ngrx/store';
+import normalize from '../../../helpers/normalize';
+import { SETUP } from '../actions/game.actions';
+import { Card, CardID } from '../models/card.model';
 
 export interface State {
   entities: { [id: string]: Card };
@@ -15,7 +15,7 @@ export const initialState: State = {
   dragons: []
 };
 
-export const cardNormalizer = normalize<Card>("id");
+export const cardNormalizer = normalize<Card>('id');
 
 export function reducer(state: State = initialState, { type, payload }): State {
   switch (type) {

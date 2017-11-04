@@ -1,6 +1,6 @@
-import { CardID } from "../models/card.model";
-import { DRAW } from "../actions/deck.actions";
-import { ROUND_SETUP } from "../actions/game.actions";
+import { CardID } from '../models/card.model';
+import { DRAW } from '../actions/deck.actions';
+import { ROUND_SETUP } from '../actions/game.actions';
 import * as game from '../actions/game.actions';
 
 export type State = CardID[];

@@ -1,0 +1,7 @@
+.player-state:nth-child(2) {
+	transform: rotate(90deg);
+}
+
+.player-state {
+  color:green;
+}

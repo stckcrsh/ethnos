@@ -1,19 +1,20 @@
-import { CardSet } from "../../models/cardset.model";
-import { HandComponent } from "../hand/hand.component";
-import { Observable } from "rxjs/Rx";
-import { getCardEntities } from "../../reducers/reducers";
-import { PlaySetAction } from "../../actions/player.actions";
-import { Store } from "@ngrx/store";
-import { Player } from "../../models/player.model";
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
-import { Subject } from "rxjs/Subject";
-import "rxjs/add/observable/if";
-import { empty } from "rxjs/observable/empty";
+import { NextTurnAction } from '../../actions/game.actions';
+import { CardSet } from '../../models/cardset.model';
+import { HandComponent } from '../hand/hand.component';
+import { Observable } from 'rxjs/Rx';
+import { getCardEntities } from '../../reducers/reducers';
+import { PlaySetAction } from '../../actions/player.actions';
+import { Store } from '@ngrx/store';
+import { Player } from '../../models/player.model';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/observable/if';
+import { empty } from 'rxjs/observable/empty';
 
 @Component({
-  selector: "app-player-state",
-  templateUrl: "./player-state.component.html",
-  styleUrls: ["./player-state.component.css"]
+  selector: 'app-player-state',
+  templateUrl: './player-state.component.html',
+  styleUrls: ['./player-state.component.css']
 })
 export class PlayerStateComponent implements OnInit {
   public isCurrentPlayer$: Subject<boolean> = new Subject<boolean>();
@@ -29,11 +30,12 @@ export class PlayerStateComponent implements OnInit {
 
   constructor(private store$: Store<any>) {
     this.isCurrentPlayer$
-      .switchMap(active =>
-        Observable.if(() => active, this.hand.playSet, empty())
-      )
+      // .switchMap(active =>
+      //   Observable.if(() => active, this.hand.playSet, empty())
+      // )
+      .switchMap(() => empty())
       .withLatestFrom(this.store$.select(getCardEntities))
-      .subscribe(([set, cards]: [CardSet, any]) =>
+      .subscribe(([set, cards]: [CardSet, any]) => {
         this.store$.dispatch(
           new PlaySetAction(
             this.player.id,
@@ -43,11 +45,12 @@ export class PlayerStateComponent implements OnInit {
               .map(card => card.id),
             cards[set.leader].type
           )
-        )
-      );
+        );
+        this.store$.dispatch(new NextTurnAction());
+      });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public logSet(set) {
     // this.store$

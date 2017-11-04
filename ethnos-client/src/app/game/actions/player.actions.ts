@@ -1,8 +1,8 @@
-import { Player, PlayerID } from "../models/player.model";
-import { CardSet } from "../models/cardset.model";
-import { CardID } from "../models/card.model";
+import { Player, PlayerID } from '../models/player.model';
+import { CardSet } from '../models/cardset.model';
+import { CardID } from '../models/card.model';
 
-export const PLAY_SET = "[Player] play set";
+export const PLAY_SET = '[Player] play set';
 
 export class PlaySetAction {
   readonly type = PLAY_SET;

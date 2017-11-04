@@ -1,5 +1,5 @@
 export default function shuffle<T>(_array: T[]): T[] {
-  let array = _array.slice();
+  const array = _array.slice();
   let currentIndex = array.length;
   let temporaryValue;
   let randomIndex;

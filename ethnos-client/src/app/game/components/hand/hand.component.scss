@@ -1,0 +1,35 @@
+.selectable {
+	color: lightskyblue
+}
+
+.active {
+	border: 1px solid green;
+	color: #008000;
+}
+
+.hand {
+	display: flex;
+	flex-direction: row;
+	padding-top: 15px;
+	float: left;
+
+	&__item {
+    display: flex;
+    flex-direction: column;
+		padding-top: 15px;
+		padding-left: 12px;
+		padding-right: 12px;
+  }
+  & .card {
+    align-self: flex-end;
+  }
+	& .card.card--active {
+		position: relative;
+		margin-top: -30px;
+	}
+
+	&__leader {
+		display: block;
+		margin: 15px auto;
+	}
+}

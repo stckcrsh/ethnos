@@ -1,12 +1,12 @@
-import { createSelector, createFeatureSelector } from "@ngrx/store";
-import * as game from "./game.reducer";
-import * as deck from "./deck.reducer";
-import * as draw from "./draw-pile.reducer";
-import * as player from "./players.reducer";
-import * as cards from "./cards.reducer";
-import * as board from "./board.reducer";
-import * as fromRoot from "../../reducers/index";
-import * as R from "ramda";
+import { createSelector, createFeatureSelector } from '@ngrx/store';
+import * as game from './game.reducer';
+import * as deck from './deck.reducer';
+import * as draw from './draw-pile.reducer';
+import * as player from './players.reducer';
+import * as cards from './cards.reducer';
+import * as board from './board.reducer';
+import * as fromRoot from '../../reducers/index';
+import * as R from 'ramda';
 
 export interface GameState {
   deck: deck.State;
@@ -27,10 +27,10 @@ export const reducers = {
 };
 
 export interface State extends fromRoot.State {
-  "game": GameState;
+  'game': GameState;
 }
 
-export const getGameFeature = createFeatureSelector<GameState>("game");
+export const getGameFeature = createFeatureSelector<GameState>('game');
 
 export const getPlayerState = createSelector(
   getGameFeature,
@@ -73,6 +73,7 @@ export const getCurrentPlayerId = createSelector(
 );
 
 export const isRoundOver = createSelector(getGameState, game.isRoundOver);
+export const isGameOver = createSelector(getGameState, game.isGameOver);
 export const getRoundNumber = createSelector(getGameState, game.getRoundNumber);
 
 export const getCurrentPlayer = createSelector(
@@ -100,7 +101,7 @@ export const getBoardScores = createSelector(
   getPlayerState,
   getBoardState,
   (_game, _player, _board) => {
-    let playerScores = _player.ids.reduce(
+    const playerScores = _player.ids.reduce(
       (acc, id) => ({ ...acc, [id]: 0 }),
       {}
     );
@@ -160,7 +161,7 @@ export const getSetScores = createSelector(
         return {
           ...acc,
           [id]: player.sets.reduce(
-            (score, set) => score + setScoring[set.cards.length-1],
+            (score, set) => score + setScoring[set.cards.length - 1],
             0
           )
         };

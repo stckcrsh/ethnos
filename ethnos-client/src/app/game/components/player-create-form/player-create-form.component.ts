@@ -1,11 +1,11 @@
-import { Player } from "../../models/player.model";
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { Player } from '../../models/player.model';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: "app-player-create-form",
-  templateUrl: "./player-create-form.component.html",
-  styleUrls: ["./player-create-form.component.css"]
+  selector: 'app-player-create-form',
+  templateUrl: './player-create-form.component.html',
+  styleUrls: ['./player-create-form.component.css']
 })
 export class PlayerCreateFormComponent implements OnInit {
   public setupForm: FormGroup;
@@ -14,7 +14,7 @@ export class PlayerCreateFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.setupForm = this.fb.group({
-      name: ""
+      name: ''
     });
   }
 

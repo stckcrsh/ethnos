@@ -1,3 +1,11 @@
-<div *ngFor="let space of spaces" class="board-space">
-  {{space | json}}
+<div class="board-space">
+  <div class="space" [ngClass]="['space--'+num]" *ngFor="let num of ['0','1','2','3','4','5']">
+    <div class="space__container">
+      <h3><small class="score" *ngFor="let score of (board$|async)[num].scores">{{score}}</small></h3>
+      <h4>Pieces</h4>
+      <ul>
+        <li *ngFor="let player of players.ids">{{players.entities[player].name}} - {{(board$|async)[num].pieces[player] || 0}}</li>
+      </ul>
+    </div>
+  </div>
 </div>

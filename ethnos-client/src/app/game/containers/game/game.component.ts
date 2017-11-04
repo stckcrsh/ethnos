@@ -1,46 +1,63 @@
-import { GameEffects } from "../../effects/game.effects";
-import { DrawDrawAction } from "../../actions/draw-pile.actions";
-import { DeckDrawnAction } from "../../actions/deck.actions";
-import shuffle from "../../../../helpers/shuffle";
-import { DrawCardAction, RoundStartAction } from "../../actions/game.actions";
-import { Card } from "../../models/card.model";
-import { Player } from "../../models/player.model";
+import { GameEffects } from '../../effects/game.effects';
+import { DrawDrawAction } from '../../actions/draw-pile.actions';
+import { DeckDrawnAction } from '../../actions/deck.actions';
+import shuffle from '../../../../helpers/shuffle';
+import { DrawCardAction, RoundStartAction, NextTurnAction } from '../../actions/game.actions';
+import { Card } from '../../models/card.model';
+import { Player } from '../../models/player.model';
 import {
   getAllCardIds,
   getAllDragonIds,
   getAllPlayers,
   getAllSpaces,
+  getBoardState,
   getCardEntities,
   getCurrentPlayerId,
   getDeckState,
   getDrawPile,
-  getTopCard
-} from "../../reducers/reducers";
-import { Store } from "@ngrx/store";
-import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs/Observable";
-import "rxjs/add/observable/combineLatest";
-import "rxjs/add/operator/do";
-import "rxjs/add/operator/map";
-import "rxjs/add/operator/take";
+  getTopCard,
+  getPlayerState
+} from '../../reducers/reducers';
+import { Store } from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/take';
+import { getCurrentPlayer } from '../../reducers/reducers';
 
 @Component({
-  selector: "app-game",
-  templateUrl: "./game.component.html",
-  styleUrls: ["./game.component.css"]
+  selector: 'app-game',
+  template: `
+    <app-board [board]="board$ | async" [players]="playerState$|async"></app-board>
+    <div>
+      <app-deck [size]="deckSize$ | async" (draw)="drawCard()"></app-deck>
+      <app-draw [cards]="drawPile$ | async" (draw)="drawDraw($event)"></app-draw>
+    </div>
+    <h3>Turn: {{(currentPlayer$ | async).name}}</h3>
+    <div class="player-state" *ngFor="let player of players$ | async;let idx = index;trackBy:trackByPlayer" >
+      <app-player-state class="player-state" [player]="player" [isCurrentPlayer]="player.id === (currentPlayerId$ | async)"></app-player-state>
+    </div>
+  `,
+  // templateUrl: './game.component.html',
+  styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  public spaces$;
+  public board$;
   public players$;
+  public playerState$;
   public deckSize$;
   public drawPile$;
   public currentPlayer$;
+  public currentPlayerId$;
 
   constructor(private store$: Store<any>, private gameEffects: GameEffects) {
-    this.spaces$ = this.store$.select(getAllSpaces);
+    this.board$ = this.store$.select(getBoardState).do(res => console.log('board$:', res));
     this.drawPile$ = this.store$
-      .select(getDrawPile)
-      .do(res => console.log(res));
+      .select(getDrawPile);
+    this.playerState$ = this.store$.select(getPlayerState);
+    this.currentPlayer$ = this.store$.select(getCurrentPlayer);
     this.players$ = Observable.combineLatest(
       this.store$.select(getAllPlayers),
       this.store$.select(getCardEntities),
@@ -56,50 +73,29 @@ export class GameComponent implements OnInit {
     );
     this.deckSize$ = this.store$.select(getDeckState).map(deck => deck.length);
 
-    this.currentPlayer$ = this.store$.select(getCurrentPlayerId);
+    this.currentPlayerId$ = this.store$.select(getCurrentPlayerId);
   }
 
-  ngOnInit() {}
-
-  public setupRound() {
-    // Observable.combineLatest(
-    //   this.store$.select(getAllCardIds),
-    //   this.store$.select(getAllPlayers),
-    //   this.store$.select(getAllDragonIds),
-    //   (cards: any[], players: any[], dragons: any[]) => {
-    //     const newDeck = shuffle(cards);
-
-    //     // take 2 cards per player for the draw pile
-    //     let drawIdx = players.length * 2;
-
-    //     // shuffle in the dragons
-    //     const action = new RoundSetup(
-    //       shuffle(newDeck.slice(drawIdx).concat(dragons)),
-    //       newDeck.slice(0, drawIdx),
-    //       players[0].id
-    //     );
-
-    //     return action;
-    //   }
-    // )
-    //   .take(1)
-    //   .subscribe(action => this.store$.dispatch(action));
-
-    this.store$.dispatch(new RoundStartAction());
-  }
+  ngOnInit() { }
 
   public drawCard() {
     this.store$
       .select(getCurrentPlayerId)
       .take(1)
-      .subscribe(id => this.store$.dispatch(new DrawCardAction(id)));
+      .subscribe(id => {
+        this.store$.dispatch(new DrawCardAction(id));
+        this.store$.dispatch(new NextTurnAction())
+      });
   }
 
   public drawDraw(card) {
     this.store$
       .select(getCurrentPlayerId)
       .take(1)
-      .subscribe(id => this.store$.dispatch(new DrawDrawAction(card.id, id)));
+      .subscribe(id => {
+        this.store$.dispatch(new DrawDrawAction(card.id, id));
+        this.store$.dispatch(new NextTurnAction());
+      });
   }
 
   public trackByPlayer(index, player) {

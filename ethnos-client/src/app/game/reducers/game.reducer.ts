@@ -1,8 +1,8 @@
-import { Card, CardID } from "../models/card.model";
-import { PlayerID, Player } from "../models/player.model";
+import { Card, CardID } from '../models/card.model';
+import { PlayerID, Player } from '../models/player.model';
 
-import * as game from "../actions/game.actions";
-import * as R from "ramda";
+import * as game from '../actions/game.actions';
+import * as R from 'ramda';
 
 export interface State {
   currentPlayer: string;
@@ -20,7 +20,7 @@ export const initialState: State = {
 
 export function reducer(state: State = initialState, { type, payload }): State {
   switch (type) {
-    case game.SETUP:
+    case game.SETUP: {
       const startPlayer = payload.startPlayer;
       const players = payload.players as Player[];
 
@@ -34,7 +34,7 @@ export function reducer(state: State = initialState, { type, payload }): State {
         currentPlayer: startPlayer,
         scores: newScores
       };
-
+    }
     case game.NEXT_PLAYER: {
       const nextPlayer = payload.nextPlayer as PlayerID;
       return {
@@ -61,7 +61,7 @@ export function reducer(state: State = initialState, { type, payload }): State {
       return {
         ...state,
         currentPlayer,
-        round: state.round+1
+        round: state.round + 1
       };
     }
     case game.ADD_SCORES: {
@@ -83,4 +83,5 @@ export function reducer(state: State = initialState, { type, payload }): State {
 export const getCurrentPlayerId = (state: State) => state.currentPlayer;
 
 export const isRoundOver = (state: State) => state.dragons.length >= 3;
+export const isGameOver = (state: State) => state.round >= 2;
 export const getRoundNumber = (state: State) => state.round;
